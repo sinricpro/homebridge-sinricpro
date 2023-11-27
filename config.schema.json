@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "SinricPro",
   "pluginType": "platform",
   "singular": true,
   "schema": {
@@ -9,7 +9,24 @@
         "title": "Name",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "default": "Sinric Pro"
+      },
+      "token": {
+        "title": "API key",
+        "type": "string",
+        "required": true
+      },
+      "enabledTypes": {
+        "title": "Enabled devices",
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "title": "Type",
+          "type": "string",
+          "enum": [
+            "Switch"
+          ]
+        }
       }
     }
   }
