@@ -32,8 +32,8 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
     public readonly config: PlatformConfig,
     public readonly api: API,
   ) {
- 
-    if(config.token == null) {
+
+    if(config.token === null) {
       this.log.error('API Token is empty. Cannot continue!');
       return;
     }
@@ -45,11 +45,12 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
     // Dynamic Platform plugins should only register new accessories after this event was fired,
     // in order to ensure they weren't added to homebridge already. This event can also be used
     // to start discovery of new accessories.
-    this.api.on('didFinishLaunching', () => { 
-      this.didFinishLaunching(); } 
+    this.api.on('didFinishLaunching', () => {
+      this.didFinishLaunching();
+    },
     );
   }
- 
+
   /**
    * This function is invoked when homebridge restores cached accessories from disk at startup.
    * It should be used to setup event handlers for characteristics and update respective values.
@@ -60,7 +61,7 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
     // add the restored accessory to the accessories cache so we can track if it has already been registered
     this.accessories.push(accessory);
   }
-  
+
   /**
    * This is an example method showing how to register discovered accessories.
    * Accessories must only be registered once, previously created accessories
@@ -74,8 +75,8 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
       this.log.info('[didFinishLaunching()]: init SSE Client..');
       this.sinricProSseClient = new SinricProSseClient(this.log, this.sinricProApiClient.authToken);
       // listen to device state changes
-      this.sinricProSseClient.onDeviceStateChange = (deviceId: string, value: any) => { 
-        this.sinricproDevices.filter(spd => spd.sinricProDeviceId == deviceId).map((device, index) => {
+      this.sinricProSseClient.onDeviceStateChange = (deviceId: string, value: any) => {
+        this.sinricproDevices.filter(spd => spd.sinricProDeviceId === deviceId).map((device) => {
           this.log.info('[onDeviceStateChange()]: Update device id: %s with %s', device.sinricProDeviceId, value);
           device.updateState(value);
         });
@@ -135,7 +136,7 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
     }
   }
 
-  createSinricProAccessory(accessory: PlatformAccessory): boolean { 
+  createSinricProAccessory(accessory: PlatformAccessory): boolean {
     const deviceTypeCode = accessory.context.device.deviceType.code;
 
     if (!this.supportedDeviceTypes.includes(deviceTypeCode)) {
@@ -157,4 +158,4 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
     return true;
 
   }
-} 
+}
