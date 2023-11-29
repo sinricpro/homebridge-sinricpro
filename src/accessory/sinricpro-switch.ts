@@ -1,6 +1,7 @@
 import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
-import { SinricProAccessory, SinricProPlatform } from '../platform';
-import { SinricProDevice } from '../sinricproApiClient';
+import { SinricProPlatform } from '../platform';
+import { SinricProAccessory } from './sinricpro-accessory';
+
 
 /**
  * Platform Accessory
@@ -44,9 +45,10 @@ export class SinricProSwitch implements SinricProAccessory {
       .onGet(this.getSwitchState.bind(this));
   }
 
-  public updateState(device: SinricProDevice): void {
+  public updateState(value: any): void {
+    // value = {"state":"Off"}
     this.platform.log.debug('Updating Switch state:', this.accessory.displayName);
-    this.switchStates.On = device.powerState == 'On'; 
+    this.switchStates.On = value.state == 'On'; 
     this.service.getCharacteristic(this.platform.Characteristic.On).updateValue(this.switchStates.On);    
   }
 
@@ -55,12 +57,11 @@ export class SinricProSwitch implements SinricProAccessory {
    * These are sent when the user changes the state of an accessory, for example, turning on a Light bulb.
    */
   async setSwitchState(value: CharacteristicValue) {
-    // implement your own code to turn your device on/off
-    this.switchStates.On = value as boolean;
-    
-    //TODO: Fix this later
-    //this.platform.sinricProApiClient.setPowerState([{ id: this.sinricProDeviceId, powerState: value }]);
-    this.platform.log.debug('Set switch to ->', value);
+    //this.switchStates.On = value as boolean; // wait for device response via SSE and update the state. 
+    const newState = value as boolean;
+    const powerState = newState === true ? "On" : "Off";
+    this.platform.sinricProApiClient.setPowerState(this.sinricProDeviceId, powerState );
+    this.platform.log.debug(`Set Switch (${this.sinricProDeviceId}) to : ${powerState}`);
   }
 
   /**

@@ -2,8 +2,8 @@
   "private": true,
   "displayName": "SinricPro",
   "name": "homebridge-sinricpro",
-  "version": "1.0.0",
-  "description": "A short description about what your plugin does.",
+  "version": "0.0.1",
+  "description": "Sinric Pro devices support for HomeKit.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -27,7 +27,8 @@
     "homebridge-plugin"
   ],
   "dependencies": {
-    "axios": "^1.6.2"
+    "axios": "^1.6.2",
+    "eventsource": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "^18.16.20",
