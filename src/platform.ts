@@ -3,9 +3,10 @@ import { API, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, 
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
 import { SinricProApiClient } from './api-client';
 import { SinricProSwitch } from './accessory/sinricpro-switch';
-import { DEVICE_TYPE_SWITCH } from './constants';
+import { DEVICE_TYPE_SWITCH, DEVICE_TYPE_LIGHT } from './constants';
 import { SinricProSseClient } from './sse-client';
 import { SinricProAccessory } from './accessory/sinricpro-accessory';
+import { SinricProLight } from './accessory/sinricpro-light';
 
 
 
@@ -18,7 +19,7 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service = this.api.hap.Service;
   public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
 
-  public readonly supportedDeviceTypes: string[] = [DEVICE_TYPE_SWITCH];
+  public readonly supportedDeviceTypes: string[] = [DEVICE_TYPE_SWITCH, DEVICE_TYPE_LIGHT];
 
   public sinricProApiClient!: SinricProApiClient;
   public sinricProSseClient!: SinricProSseClient;
@@ -149,6 +150,9 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
     switch (deviceTypeCode) {
       case DEVICE_TYPE_SWITCH:
         this.sinricproDevices.push(new SinricProSwitch(this, accessory));
+        break;
+      case DEVICE_TYPE_LIGHT:
+        this.sinricproDevices.push(new SinricProLight(this, accessory));
         break;
       default:
         this.log.info('Unsupported accessory type:', accessory.context.device.type);

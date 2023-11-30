@@ -1,5 +1,6 @@
 
 export const DEVICE_TYPE_SWITCH = 'sinric.devices.types.SWITCH'; /* Switch */
+export const DEVICE_TYPE_LIGHT = 'sinric.devices.types.LIGHT'; /* Light */
 
 // TODO: Change to homebridge-sinricpro later
 export const SINRICPRO_HOMEBRIDGE_CLIENT_ID = 'portal'; /* API client id */

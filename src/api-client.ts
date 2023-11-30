@@ -34,7 +34,7 @@ export class SinricProApiClient {
 
   constructor(
     apiKey: string,
-        public readonly log: Logger) {
+    public readonly log: Logger) {
     this.apiKey = apiKey;
   }
 
