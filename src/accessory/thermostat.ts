@@ -63,6 +63,7 @@ export class SinricProThermostat extends AccessoryController implements SinricPr
       .onGet(this.getTargetHeatingCoolingState.bind(this))
       .onSet(this.setTargetHeatingCoolingState.bind(this));
 
+    this.thermostatStates.currentTemperature = accessory.context.device.temperature;
   }
 
   /**
