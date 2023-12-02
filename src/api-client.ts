@@ -133,41 +133,78 @@ export class SinricProApiClient {
   }
 
   private getCommand(action, value) {
-    return {
+    return JSON.stringify({
       'clientId': SINRICPRO_HOMEBRIDGE_CLIENT_ID,
       'messageId': Guid.newGuid(),
       'type': 'request',
       'action': action,
       'createdAt': this.getSecondsSinceEpich(),
       'value': JSON.stringify(value),
-    };
+    });
   }
 
-  public async setPowerState(deviceId: string, powerState: string): Promise<boolean> {
+  private async execAction(deviceId: string, data?: string): Promise<boolean> {
     const deviceActionUrl = util.format('/devices/%s/action', deviceId);
 
     if (await this.authenticate()) {
       try {
-        const data = this.getCommand('setPowerState', { 'state': powerState });
         const response = await this.axiosClient.post(
           deviceActionUrl,
           data,
         );
 
         if (response.status === 200) {
-          this.log.debug('[setPowerState()]: request has been queued for processing!');
+          this.log.debug('[execAction()]: request has been queued for processing!');
           return true;
         } else {
-          this.log.error('[setPowerState()]: server returned an error. status: ', response.status);
+          this.log.error('[execAction()]: server returned an error. status: ', response.status);
           return false;
         }
       } catch (error) {
-        this.log.error('[setPowerState()]: error state: ', error);
+        this.log.error('[execAction()]: error state: ', error);
       }
     } else {
-      this.log.error('[setPowerState()]: authentication failed!');
+      this.log.error('[execAction()]: authentication failed!');
     }
 
     return false;
   }
+
+  public async setPowerState(deviceId: string, powerState: string): Promise<boolean> {
+    const data = this.getCommand('setPowerState', { 'state': powerState });
+    return this.execAction(deviceId, data);
+  }
+
+  public async setBrightness(deviceId: string, brightness: number): Promise<boolean> {
+    const data = this.getCommand('setBrightness', { 'brightness': brightness });
+    return this.execAction(deviceId, data);
+  }
+
+  public async setRangeValue(deviceId: string, rangeValue: number): Promise<boolean> {
+    const data = this.getCommand('setRangeValue', { 'rangeValue': rangeValue });
+    return this.execAction(deviceId, data);
+  }
+
+  public async setTargetTemperature(deviceId: string, toTemperature: number): Promise<boolean> {
+    const data = this.getCommand('targetTemperature', { 'temperature': toTemperature });
+    return this.execAction(deviceId, data);
+  }
+
+  public async setMode(deviceId: string, mode: string): Promise<boolean> {
+    const data = this.getCommand('setMode', { 'mode': mode });
+    return this.execAction(deviceId, data);
+  }
+
+  public async setLockState(deviceId: string, state: string): Promise<boolean> {
+    const data = this.getCommand('setLockState', { 'state': state });
+    return this.execAction(deviceId, data);
+  }
+
+  public async setDoorbellPress(deviceId: string): Promise<boolean> {
+    const data = this.getCommand('DoorbellPress', { 'state': 'pressed' });
+    return this.execAction(deviceId, data);
+  }
+
+
+
 }

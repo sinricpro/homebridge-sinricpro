@@ -2,11 +2,12 @@ import { API, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, 
 
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
 import { SinricProApiClient } from './api-client';
-import { SinricProSwitch } from './accessory/sinricpro-switch';
-import { DEVICE_TYPE_SWITCH, DEVICE_TYPE_LIGHT } from './constants';
+import { SinricProSwitch } from './accessory/switch';
+import { DeviceTypeConstants } from './constants';
 import { SinricProSseClient } from './sse-client';
-import { SinricProAccessory } from './accessory/sinricpro-accessory';
-import { SinricProLight } from './accessory/sinricpro-light';
+import { SinricProAccessory } from './accessory/accessory';
+import { SinricProLight } from './accessory/light';
+import { SinricProDimmableSwitch } from './accessory/dimmable-switch';
 
 
 
@@ -19,7 +20,11 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service = this.api.hap.Service;
   public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
 
-  public readonly supportedDeviceTypes: string[] = [DEVICE_TYPE_SWITCH, DEVICE_TYPE_LIGHT];
+  public readonly supportedDeviceTypes: string[] = [
+    DeviceTypeConstants.SWITCH,
+    DeviceTypeConstants.LIGHT,
+    DeviceTypeConstants.DIMMABLE_SWITCH,
+  ];
 
   public sinricProApiClient!: SinricProApiClient;
   public sinricProSseClient!: SinricProSseClient;
@@ -76,10 +81,10 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
       this.log.info('[didFinishLaunching()]: init SSE Client..');
       this.sinricProSseClient = new SinricProSseClient(this.log, this.sinricProApiClient.authToken);
       // listen to device state changes
-      this.sinricProSseClient.onDeviceStateChange = (deviceId: string, value: any) => {
+      this.sinricProSseClient.onDeviceStateChange = (deviceId: string, action: string, value: any) => {
         this.sinricproDevices.filter(spd => spd.sinricProDeviceId === deviceId).map((device) => {
           this.log.info('[onDeviceStateChange()]: Update device id: %s with %s', device.sinricProDeviceId, value);
-          device.updateState(value);
+          device.updateState(action, value);
         });
       };
       this.sinricProSseClient.listen();
@@ -148,11 +153,14 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
     this.log.info('Adding new accessory:', accessory.displayName);
 
     switch (deviceTypeCode) {
-      case DEVICE_TYPE_SWITCH:
+      case DeviceTypeConstants.SWITCH:
         this.sinricproDevices.push(new SinricProSwitch(this, accessory));
         break;
-      case DEVICE_TYPE_LIGHT:
+      case DeviceTypeConstants.LIGHT:
         this.sinricproDevices.push(new SinricProLight(this, accessory));
+        break;
+      case DeviceTypeConstants.DIMMABLE_SWITCH:
+        this.sinricproDevices.push(new SinricProDimmableSwitch(this, accessory));
         break;
       default:
         this.log.info('Unsupported accessory type:', accessory.context.device.type);
