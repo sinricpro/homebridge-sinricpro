@@ -4,16 +4,16 @@
 
 </p>
 
-### Homebridge - SinricPro: Expose all your devices to Homekit.
+<h1 align="center">Homebridge - SinricPro</h1>
 
-The plugin uses Sinric Pro API and EventStream to map all the devices to HomeKit accessories.
+The plugin exposes all your SinricPro devices to Homekit.
 
 ### How to use this plug-in ?
 
 1. Install Homebridge
 2. Install SinricPro plugin
-3. Enter the Your Sinric Pro API Key. If you do not have one, goto Sinric Pro Portal -> Credentials -> New API Key
-4. Restart Homebridge. All your Sinric Pro devices will be synced on start-up
+3. Enter the your Sinric Pro API key. If you do not have one, go to Sinric Pro Portal -> Credentials -> New API Key
+4. Restart Homebridge. Your Sinric Pro devices are synced on start-up
 
 #### Following devices types are supported:
 
