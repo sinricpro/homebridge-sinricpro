@@ -40,10 +40,7 @@ export class SinricProApiClient {
     if (await this.authenticate()) {
       const initData = await Promise.all([
         this.axiosClient.get('/devices'),
-        this.axiosClient.get('/rooms'),
       ]);
-
-      this.rooms = initData[1].data.rooms;
 
       this.log.debug(`${initData[0].data.devices.length} device(s) found!`);
 
