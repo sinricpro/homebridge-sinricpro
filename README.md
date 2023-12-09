@@ -4,9 +4,16 @@
 
 </p>
 
-### Homebridge Proxy which exposes Sinric Pro devices to Homekit.
+### Homebridge - SinricPro: Expose all your devices to Homekit.
 
 The plugin uses Sinric Pro API and EventStream to map all the devices to HomeKit accessories.
+
+### How to use this plug-in ?
+
+1. Install Homebridge
+2. Install SinricPro plugin
+3. Enter the Your Sinric Pro API Key. If you do not have one, goto Sinric Pro Portal -> Credentials -> New API Key
+4. Restart Homebridge. All your Sinric Pro devices will be synced on start-up
 
 #### Following devices types are supported:
 
@@ -26,12 +33,7 @@ The plugin uses Sinric Pro API and EventStream to map all the devices to HomeKit
 | `Motion Sensor` | MotionSensor | - 
 | `Contact Sensor` | ContactSensor | - 
 
-### How to use this plug-in
 
-1. Install Homebridge
-2. Install SinricPro plugin
-3. Enter the Your Sinric Pro API Key. If you do not have one, goto Sinric Pro Portal -> Credentials -> New API Key
-4. Restart Homebridge. All your Sinric Pro devices will be synced on start-up
 
 #### For Developments
 
