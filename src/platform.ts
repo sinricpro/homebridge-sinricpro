@@ -8,8 +8,17 @@ import { SinricProSseClient } from './sse-client';
 import { SinricProAccessory } from './accessory/accessory';
 import { SinricProLight } from './accessory/light';
 import { SinricProDimmableSwitch } from './accessory/dimmable-switch';
-
-
+import { SinricProDoorbell } from './accessory/doorbell';
+import { SinricProTemperatureSensor } from './accessory/temperature-sensor';
+import { SinricProFan } from './accessory/fan';
+import { SinricProMotionSensor } from './accessory/motion-sensor';
+import { SinricProContactSensor } from './accessory/contact-sensor';
+import { SinricProThermostat } from './accessory/thermostat';
+import { SinricProTV } from './accessory/tv';
+import { SinricProLock } from './accessory/lock';
+import { SinricProGarageDoor } from './accessory/garage-door';
+import { SinricProBlind } from './accessory/blind';
+import { SinricProWindowACUnit } from './accessory/window-ac-unit';
 
 /**
  * HomebridgePlatform
@@ -19,12 +28,6 @@ import { SinricProDimmableSwitch } from './accessory/dimmable-switch';
 export class SinricProPlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service = this.api.hap.Service;
   public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
-
-  public readonly supportedDeviceTypes: string[] = [
-    DeviceTypeConstants.SWITCH,
-    DeviceTypeConstants.LIGHT,
-    DeviceTypeConstants.DIMMABLE_SWITCH,
-  ];
 
   public sinricProApiClient!: SinricProApiClient;
   public sinricProSseClient!: SinricProSseClient;
@@ -81,6 +84,7 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
       this.log.info('[didFinishLaunching()]: init SSE Client..');
       this.sinricProSseClient = new SinricProSseClient(this.log, this.sinricProApiClient.authToken);
       // listen to device state changes
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.sinricProSseClient.onDeviceStateChange = (deviceId: string, action: string, value: any) => {
         this.sinricproDevices.filter(spd => spd.sinricProDeviceId === deviceId).map((device) => {
           this.log.info('[onDeviceStateChange()]: Update device id: %s with %s', device.sinricProDeviceId, value);
@@ -106,7 +110,7 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
 
       if (existingAccessory) {
         // the accessory already exists
-        this.log.info('Restoring existing accessory from cache:', existingAccessory.displayName);
+        this.log.info('[didFinishLaunching()]: Restoring existing accessory from cache:', existingAccessory.displayName);
 
         // if you need to update the accessory.context then you should run `api.updatePlatformAccessories`. eg.:
         existingAccessory.context.device = device;
@@ -145,12 +149,7 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
   createSinricProAccessory(accessory: PlatformAccessory): boolean {
     const deviceTypeCode = accessory.context.device.deviceType.code;
 
-    if (!this.supportedDeviceTypes.includes(deviceTypeCode)) {
-      this.log.debug('Device type: %s not yet supported!', deviceTypeCode);
-      return false;
-    }
-
-    this.log.info('Adding new accessory:', accessory.displayName);
+    this.log.info('[createSinricProAccessory()]: Adding new accessory:', accessory.displayName);
 
     switch (deviceTypeCode) {
       case DeviceTypeConstants.SWITCH:
@@ -162,8 +161,41 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
       case DeviceTypeConstants.DIMMABLE_SWITCH:
         this.sinricproDevices.push(new SinricProDimmableSwitch(this, accessory));
         break;
+      case DeviceTypeConstants.DOORBELL:
+        this.sinricproDevices.push(new SinricProDoorbell(this, accessory));
+        break;
+      case DeviceTypeConstants.TEMPERATURE_SENSOR:
+        this.sinricproDevices.push(new SinricProTemperatureSensor(this, accessory));
+        break;
+      case DeviceTypeConstants.FAN:
+        this.sinricproDevices.push(new SinricProFan(this, accessory));
+        break;
+      case DeviceTypeConstants.MOTION_SENSOR:
+        this.sinricproDevices.push(new SinricProMotionSensor(this, accessory));
+        break;
+      case DeviceTypeConstants.CONTACT_SENSOR:
+        this.sinricproDevices.push(new SinricProContactSensor(this, accessory));
+        break;
+      case DeviceTypeConstants.THERMOSTAT:
+        this.sinricproDevices.push(new SinricProThermostat(this, accessory));
+        break;
+      case DeviceTypeConstants.TV:
+        this.sinricproDevices.push(new SinricProTV(this, accessory));
+        break;
+      case DeviceTypeConstants.SMARTLOCK:
+        this.sinricproDevices.push(new SinricProLock(this, accessory));
+        break;
+      case DeviceTypeConstants.GARAGE_DOOR:
+        this.sinricproDevices.push(new SinricProGarageDoor(this, accessory));
+        break;
+      case DeviceTypeConstants.BLIND:
+        this.sinricproDevices.push(new SinricProBlind(this, accessory));
+        break;
+      case DeviceTypeConstants.AC_UNIT:
+        this.sinricproDevices.push(new SinricProWindowACUnit(this, accessory));
+        break;
       default:
-        this.log.info('Unsupported accessory type:', accessory.context.device.type);
+        this.log.warn('[createSinricProAccessory()]: Unsupported accessory type:', accessory.context.device.type);
         break;
     }
 

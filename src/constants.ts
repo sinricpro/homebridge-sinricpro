@@ -28,10 +28,12 @@ export abstract class ActionConstants {
   static readonly SET_POWER_LEVEL = 'setPowerLevel';
   static readonly ADJUST_POWER_LEVEL = 'adjustPowerLevel';
   static readonly CURRENT_TEMPERATURE = 'currentTemperature';
+  static readonly TARGET_TEMPERATURE = 'targetTemperature';
   static readonly MOTION = 'motion';
   static readonly SET_CONTACT_STATE = 'setContactState';
   static readonly SET_RANGE_VALUE = 'setRangeValue';
   static readonly SET_LOCK_STATE = 'setLockState';
+  static readonly SET_THERMOSTAT_MODE = 'setThermostatMode';
   static readonly SET_MODE = 'setMode';
 }
 
@@ -40,7 +42,7 @@ export abstract class DeviceTypeConstants {
   static readonly LIGHT = 'sinric.devices.types.LIGHT';
   static readonly DIMMABLE_SWITCH = 'sinric.devices.types.DIMMABLE_SWITCH';
   static readonly DOORBELL = 'sinric.devices.types.DOORBELL';
-  static readonly TEMPERATURESENSOR = 'sinric.devices.types.TEMPERATURESENSOR';
+  static readonly TEMPERATURE_SENSOR = 'sinric.devices.types.TEMPERATURESENSOR';
   static readonly AC_UNIT = 'sinric.devices.types.AC_UNIT';
   static readonly FAN = 'sinric.devices.types.FAN';
   static readonly MOTION_SENSOR = 'sinric.devices.types.MOTION_SENSOR';

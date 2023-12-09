@@ -7,12 +7,13 @@ import { ActionConstants } from '../constants';
 
 /**
  * Sinric Pro - Motion Sensor
+ * https://developers.homebridge.io/#/service/MotionSensor
  */
 export class SinricProMotionSensor extends AccessoryController implements SinricProAccessory {
   private readonly service: Service;
 
   private states = {
-    motionDetected: false,
+    motionDetected: 0,
   };
 
   constructor(
@@ -26,7 +27,7 @@ export class SinricProMotionSensor extends AccessoryController implements Sinric
       .setCharacteristic(this.platform.Characteristic.Model, ModelConstants.MOTION_SENSOR_MODEL)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.sinricProDeviceId);
 
-    this.platform.log.debug('Adding SinricProMotionSensor', this.accessory.displayName, accessory.context.device);
+    this.platform.log.debug('[SinricProMotionSensor()]: Adding device:', this.accessory.displayName, accessory.context.device);
 
     this.service = this.accessory.getService(this.platform.Service.MotionSensor)
       ?? this.accessory.addService(this.platform.Service.MotionSensor);
@@ -37,6 +38,9 @@ export class SinricProMotionSensor extends AccessoryController implements Sinric
     this.service
       .getCharacteristic(this.platform.Characteristic.MotionDetected)
       .onGet(this.getMotionDetected.bind(this));
+
+    // restore present device state.
+    this.states.motionDetected = (accessory.context.device.lastMotionState === 'detected' ? 1 : 0);
   }
 
   getMotionDetected(): CharacteristicValue {
@@ -50,10 +54,10 @@ export class SinricProMotionSensor extends AccessoryController implements Sinric
    * @param value  - "state": "detected" or  "state": "notDetected"
    */
   updateState(action: string, value: any): void {
-    this.platform.log.debug('Updating TemperatureSensor state:', this.accessory.displayName);
+    this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 
     if(action === ActionConstants.MOTION) {
-      this.states.motionDetected = value.state === 'detected';
+      this.states.motionDetected = (value.state === 'detected' ? 1 : 0);
     }
 
     this.service.updateCharacteristic(this.platform.Characteristic.MotionDetected, this.states.motionDetected);

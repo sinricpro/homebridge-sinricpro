@@ -7,10 +7,10 @@ import { ModelConstants } from '../constants';
 import { ActionConstants } from '../constants';
 
 /**
- * Sinric Pro - Thermostat
+ * Sinric Pro - WindowACUnit
  * https://developers.homebridge.io/#/service/Thermostat
  */
-export class SinricProThermostat extends AccessoryController implements SinricProAccessory {
+export class SinricProWindowACUnit extends AccessoryController implements SinricProAccessory {
   private service: Service;
 
   private thermostatStates = {
@@ -93,10 +93,7 @@ export class SinricProThermostat extends AccessoryController implements SinricPr
     }
   }
 
-  /**
-   * Convert Sinric Pro thermostat mode to Homebridge TargetHeatingCoolingState.
-   */
-  private toTargetHeatingCoolingState(thermostatMode: string) {
+  toTargetHeatingCoolingState(thermostatMode: string) {
     let state = this.platform.Characteristic.TargetHeatingCoolingState.COOL;
 
     if('OFF' === thermostatMode) {
@@ -110,10 +107,7 @@ export class SinricProThermostat extends AccessoryController implements SinricPr
     return state;
   }
 
-  /**
-   * Convert Sinric Pro thermostat mode to Homebridge CurrentHeatingCoolingState.
-   */
-  private toCurrentHeatingCoolingState(thermostatMode: string) {
+  toCurrentHeatingCoolingState(thermostatMode: string) {
     let state = this.platform.Characteristic.CurrentHeatingCoolingState.COOL;
 
     if('OFF' === thermostatMode) {
@@ -127,17 +121,17 @@ export class SinricProThermostat extends AccessoryController implements SinricPr
     return state;
   }
 
-  private getCurrentTemperature(): CharacteristicValue {
+  getCurrentTemperature(): CharacteristicValue {
     this.platform.log.debug('getCurrentTemperature:', this.accessory.displayName, '=', this.thermostatStates.currentTemperature);
     return this.thermostatStates.currentTemperature;
   }
 
-  private onGetTargetTemperature(): CharacteristicValue {
+  onGetTargetTemperature(): CharacteristicValue {
     this.platform.log.debug('onGetTargetTemperature:', this.accessory.displayName, '=', this.thermostatStates.targetTemperature);
     return this.thermostatStates.targetTemperature;
   }
 
-  private onSetTargetTemperature(value: CharacteristicValue) {
+  onSetTargetTemperature(value: CharacteristicValue) {
     this.platform.log.debug('onSetTargetTemperature:', this.accessory.displayName, 'to', value);
     this.thermostatStates.targetTemperature = value as number;
     super.targetTemperature(value);
@@ -148,22 +142,22 @@ export class SinricProThermostat extends AccessoryController implements SinricPr
     return this.thermostatStates.targetTemperatureDisplayUnit;
   }
 
-  private setTemperatureDisplayUnits(value: CharacteristicValue) {
+  setTemperatureDisplayUnits(value: CharacteristicValue) {
     this.platform.log.debug('setTemperatureDisplayUnits:', this.accessory.displayName, 'to', value);
     this.thermostatStates.targetTemperatureDisplayUnit = value as number;
   }
 
-  private getCurrentHeatingCoolingState(): CharacteristicValue {
+  getCurrentHeatingCoolingState(): CharacteristicValue {
     this.platform.log.debug('getCurrentHeatingCoolingState:', this.accessory.displayName, '=', this.thermostatStates.currentHeatingCoolingState);
     return this.thermostatStates.currentHeatingCoolingState;
   }
 
-  private getTargetHeatingCoolingState(): CharacteristicValue {
+  getTargetHeatingCoolingState(): CharacteristicValue {
     this.platform.log.debug('getTargetHeatingCoolingState:', this.accessory.displayName, '=', this.thermostatStates.targetHeatingCoolingState);
     return this.thermostatStates.targetHeatingCoolingState;
   }
 
-  private setTargetHeatingCoolingState(value: CharacteristicValue) : void {
+  setTargetHeatingCoolingState(value: CharacteristicValue) {
     this.platform.log.debug('setTargetHeatingCoolingState:', this.accessory.displayName, 'to', value);
     this.thermostatStates.targetHeatingCoolingState = value as number;
     let thermostatMode = 'AUTO';
@@ -182,7 +176,7 @@ export class SinricProThermostat extends AccessoryController implements SinricPr
 
   }
 
-  private getPowerState(): CharacteristicValue {
+  getPowerState(): CharacteristicValue {
     this.platform.log.debug('getPowerState:', this.accessory.displayName, '=', this.thermostatStates.on);
     return this.thermostatStates.on;
   }

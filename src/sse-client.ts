@@ -8,6 +8,7 @@ import { SINRICPRO_SSE_ENDPOINT_BASE_URL } from './constants';
 export class SinricProSseClient {
   private eventSource!: EventSource;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public onDeviceStateChange?: (deviceId: string, action: string, value: any) => void;
 
   constructor(

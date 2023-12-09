@@ -7,6 +7,7 @@ import { ActionConstants } from '../constants';
 
 /**
  * Sinric Pro - Fan
+ * https://developers.homebridge.io/#/service/Fanv2
  */
 export class SinricProFan extends AccessoryController implements SinricProAccessory {
   private service: Service;
@@ -27,7 +28,7 @@ export class SinricProFan extends AccessoryController implements SinricProAccess
       .setCharacteristic(this.platform.Characteristic.Model, ModelConstants.FAN_MODEL)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.sinricProDeviceId);
 
-    this.platform.log.debug('Adding Fan', this.accessory.displayName, accessory.context.device);
+    this.platform.log.debug('[SinricProFan()]: Adding device:', this.accessory.displayName, accessory.context.device);
 
     this.service = this.accessory.getService(this.platform.Service.Fan)
       ?? this.accessory.addService(this.platform.Service.Fan);
@@ -42,22 +43,24 @@ export class SinricProFan extends AccessoryController implements SinricProAccess
       .onSet(this.setPowerState.bind(this))
       .onGet(this.getPowerState.bind(this));
 
-    // this.service.getCharacteristic(this.platform.Characteristic.Active)
-    //       .onGet(this.getActive.bind(this))
-    //       .onSet(this.setActive.bind(this));
-
     this.service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
       .onGet(this.getRotationSpeed.bind(this))
       .onSet(this.setRotationSpeed.bind(this));
+
+    // restore present device state.
+    this.fanState.on = ('ON' === accessory.context.device.powerState?.toUpperCase());
+    if(this.fanState.on) {
+      this.fanState.rotationSpeed = this.accessory.context.device.rangeValue ?? 1;
+    }
   }
 
   /**
    * Updates the service with the new value.
-   * @param action - setPowerState
-   * @param value  - The message containing the new value. eg: {"state":"Off"}
+   * @param action - setPowerState, setRangeValue
+   * @param value  - {"state":"Off"}, "{"value" : 1}"
    */
   public updateState(action: string, value: any): void {
-    this.platform.log.debug('Updating:', this.accessory.displayName, '=', value);
+    this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 
     if(action === ActionConstants.SET_POWER_STATE) {
       this.fanState.on = 'ON' === value.state.toUpperCase();
@@ -68,17 +71,17 @@ export class SinricProFan extends AccessoryController implements SinricProAccess
     }
   }
 
-  getPowerState(): CharacteristicValue {
+  private getPowerState(): CharacteristicValue {
     this.platform.log.debug('getPowerState:', this.accessory.displayName, '=', this.fanState.on);
     return this.fanState.on;
   }
 
-  getRotationSpeed(): CharacteristicValue {
+  private getRotationSpeed(): CharacteristicValue {
     this.platform.log.info('getRotationSpeed:', this.accessory.displayName, 'is currently', this.fanState.rotationSpeed);
     return this.fanState.rotationSpeed;
   }
 
-  setRotationSpeed(value: CharacteristicValue) {
+  private setRotationSpeed(value: CharacteristicValue): void {
     super.setRangeValue(value);
   }
 }

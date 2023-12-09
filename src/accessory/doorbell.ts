@@ -7,6 +7,9 @@ import { ActionConstants } from '../constants';
 
 /**
  * Sinric Pro - Doorbell
+ * https://developers.homebridge.io/#/service/Doorbell
+ *
+ * AppleHome app shows device is not supported.
  */
 export class SinricProDoorbell extends AccessoryController implements SinricProAccessory {
   private service: Service;
@@ -26,24 +29,29 @@ export class SinricProDoorbell extends AccessoryController implements SinricProA
       .setCharacteristic(this.platform.Characteristic.Model, ModelConstants.DOORBELL_MODEL)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.sinricProDeviceId);
 
-    this.platform.log.debug('Adding Doorbell', this.accessory.displayName, accessory.context.device);
+    this.platform.log.debug('[SinricProDoorbell()]: Adding device:', this.accessory.displayName, accessory.context.device);
 
     this.service = this.accessory.getService(this.platform.Service.Doorbell)
       ?? this.accessory.addService(this.platform.Service.Doorbell);
 
     this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.name);
+    this.service.setPrimaryService(true);
 
     // register handlers for characteristics
     this.service
       .getCharacteristic(this.platform.Characteristic.ProgrammableSwitchEvent)
-      .onSet(() => this.setProgrammableSwitchEvent());
+      .onGet(this.handleProgrammableSwitchEventGet.bind(this));
   }
 
   updateState(action: string, value: any): void {
-    throw new Error('Method not implemented.');
+    this.platform.log.error('[updateState()]: Method not implemented.!');
+    // this.service?.getCharacteristic(this.platform.Characteristic.ProgrammableSwitchEvent)
+    //     ?.updateValue(this.State.ProgrammableSwitchEvent);
   }
 
-  setProgrammableSwitchEvent() {
-    this.setDoorbellPress();
+  handleProgrammableSwitchEventGet() {
+    //this.setDoorbellPress();
+    const currentValue = this.platform.Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS;
+    return currentValue;
   }
 }

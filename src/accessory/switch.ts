@@ -26,7 +26,7 @@ export class SinricProSwitch extends AccessoryController implements SinricProAcc
       .setCharacteristic(this.platform.Characteristic.Model, ModelConstants.SWITCH_MODEL)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.sinricProDeviceId);
 
-    this.platform.log.debug('Adding Switch', this.accessory.displayName, accessory.context.device);
+    this.platform.log.debug('[SinricProSwitch()]: Adding device:', this.accessory.displayName, accessory.context.device);
 
     this.service = this.accessory.getService(this.platform.Service.Switch)
       ?? this.accessory.addService(this.platform.Service.Switch);
@@ -34,12 +34,13 @@ export class SinricProSwitch extends AccessoryController implements SinricProAcc
     this.service.setPrimaryService(true);
     this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.name);
 
-    this.switchStates.on = ('ON' === accessory.context.device.powerState?.toUpperCase());
-
     // register handlers for the On/Off Characteristic
     this.service.getCharacteristic(this.platform.Characteristic.On)
       .onSet(this.setPowerState.bind(this))
       .onGet(this.getPowerState.bind(this));
+
+    // restore present device state.
+    this.switchStates.on = ('ON' === accessory.context.device.powerState?.toUpperCase());
   }
 
   /**
@@ -48,7 +49,7 @@ export class SinricProSwitch extends AccessoryController implements SinricProAcc
    * @param value  - The message containing the new value. eg: {"state":"Off"}
    */
   public updateState(action: string, value: any): void {
-    this.platform.log.debug('Updating:', this.accessory.displayName, '=', value);
+    this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 
     if(action === ActionConstants.SET_POWER_STATE) {
       this.switchStates.on = 'ON' === value.state.toUpperCase();
@@ -56,8 +57,8 @@ export class SinricProSwitch extends AccessoryController implements SinricProAcc
     }
   }
 
-  getPowerState(): CharacteristicValue {
-    this.platform.log.debug('getPowerState:', this.accessory.displayName, '=', this.switchStates.on);
+  private getPowerState(): CharacteristicValue {
+    this.platform.log.debug('[getPowerState()]: device:', this.accessory.displayName, ', on=', this.switchStates.on);
     return this.switchStates.on;
   }
 }

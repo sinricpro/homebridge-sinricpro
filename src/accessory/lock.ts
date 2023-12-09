@@ -7,13 +7,14 @@ import { ActionConstants } from '../constants';
 
 /**
  * Sinric Pro - Lock
+ * https://developers.homebridge.io/#/service/LockMechanism
  */
 export class SinricProLock extends AccessoryController implements SinricProAccessory {
   private service: Service;
 
   private states = {
-    lockCurrentState: false,
-    lockTargetState: false,
+    lockCurrentState: 0,
+    lockTargetState: 0,
   };
 
   constructor(
@@ -27,7 +28,7 @@ export class SinricProLock extends AccessoryController implements SinricProAcces
       .setCharacteristic(this.platform.Characteristic.Model, ModelConstants.LOCK_MODEL)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.sinricProDeviceId);
 
-    this.platform.log.debug('Adding Lock', this.accessory.displayName, accessory.context.device);
+    this.platform.log.debug('[SinricProLock()]: Adding device:', this.accessory.displayName, accessory.context.device);
 
     this.service = this.accessory.getService(this.platform.Service.LockMechanism)
       ?? this.accessory.addService(this.platform.Service.LockMechanism);
@@ -37,39 +38,52 @@ export class SinricProLock extends AccessoryController implements SinricProAcces
 
     // register handlers for the characteristic
     this.service.getCharacteristic(this.platform.Characteristic.LockCurrentState);
+
     this.service.getCharacteristic(this.platform.Characteristic.LockTargetState)
-      .onSet(this.setLockTargetState.bind(this))                // SET - bind to the `setOn` method below
+      .onSet(this.setLockTargetState.bind(this))
       .onGet(this.getLockTargetState.bind(this));
 
-    this.states.lockCurrentState = ('LOCKED' === this.accessory.context.device.lockState?.toUpperCase());
+    // restore present device state.
+    if('LOCKED' === this.accessory.context.device.lockState?.toUpperCase()) {
+      this.states.lockCurrentState = this.platform.Characteristic.LockCurrentState.SECURED;
+    } else {
+      this.states.lockCurrentState = this.platform.Characteristic.LockCurrentState.UNSECURED;
+    }
   }
 
   /**
    * Updates the service with the new value.
    * @param action - setLockState
-   * @param value  - {"state": "lock"}
+   * @param value  - { mode: 'lock' }
    */
   public updateState(action: string, value: any): void {
-    this.platform.log.debug('Updating:', this.accessory.displayName, '=', value);
+    this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 
     if(action === ActionConstants.SET_LOCK_STATE) {
-      this.states.lockCurrentState = ('LOCKED' === value.state?.toUpperCase());
+      if(('LOCKED' === value.state?.toUpperCase())) {
+        this.states.lockCurrentState = this.platform.Characteristic.LockCurrentState.SECURED;
+      } else {
+        this.states.lockCurrentState = this.platform.Characteristic.LockCurrentState.UNSECURED;
+      }
+
+      this.service.getCharacteristic(this.platform.Characteristic.LockCurrentState).updateValue(this.states.lockCurrentState);
       this.accessory.context.device.lockState = value.state;
     }
   }
 
   async setLockTargetState(value: CharacteristicValue) {
-    const tmpValue = value as boolean;
-    this.platform.log.debug('setLockTargetState:', this.accessory.displayName, '=', tmpValue);
+    const tmpValue = value as number;
+    this.platform.log.debug('[setLockTargetState()]:', this.accessory.displayName, '=', tmpValue);
 
     if (this.states.lockTargetState !== tmpValue) {
       this.states.lockTargetState = tmpValue;
-      super.setMode(tmpValue ? 'lock' : 'unlock');
+      super.setLockState(tmpValue ? 'lock' : 'unlock');
     }
   }
 
   getLockTargetState(): CharacteristicValue {
     const isLock = this.states.lockCurrentState;
+    this.platform.log.debug('[getLockTargetState()]:', this.accessory.displayName, '=', isLock);
     return isLock;
   }
 }

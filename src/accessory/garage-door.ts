@@ -7,13 +7,14 @@ import { ActionConstants } from '../constants';
 
 /**
  * Sinric Pro - Garage Door
+ * https://developers.homebridge.io/#/service/GarageDoorOpener
  */
 export class SinricProGarageDoor extends AccessoryController implements SinricProAccessory {
   private service: Service;
 
   private states = {
-    currentState: false,
-    targetState: false,
+    currentState: 0,
+    targetState: 0,
   };
 
   constructor(
@@ -27,7 +28,7 @@ export class SinricProGarageDoor extends AccessoryController implements SinricPr
       .setCharacteristic(this.platform.Characteristic.Model, ModelConstants.GARAGE_DOOR_MODEL)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.sinricProDeviceId);
 
-    this.platform.log.debug('Adding Garage Door', this.accessory.displayName, accessory.context.device);
+    this.platform.log.debug('[SinricProGarageDoor()]: Adding device:', this.accessory.displayName, accessory.context.device);
 
     this.service = this.accessory.getService(this.platform.Service.GarageDoorOpener)
       ?? this.accessory.addService(this.platform.Service.GarageDoorOpener);
@@ -36,12 +37,19 @@ export class SinricProGarageDoor extends AccessoryController implements SinricPr
     this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.name);
 
     // register handlers for the characteristic
-    this.service.getCharacteristic(this.platform.Characteristic.CurrentDoorState);
+    this.service.getCharacteristic(this.platform.Characteristic.CurrentDoorState)
+      .onGet(this.getCurrentDoorState.bind(this));
+
     this.service.getCharacteristic(this.platform.Characteristic.TargetDoorState)
       .onSet(this.setTargetState.bind(this))
       .onGet(this.getTargetState.bind(this));
 
-    this.states.currentState = ('OPEN' === this.accessory.context.device.garageDoorState?.toUpperCase());
+    // restore present device state.
+    if('OPEN' === this.accessory.context.device.garageDoorState?.toUpperCase()) {
+      this.states.currentState = this.platform.Characteristic.TargetDoorState.OPEN;
+    } else {
+      this.states.currentState = this.platform.Characteristic.TargetDoorState.CLOSED;
+    }
   }
 
   /**
@@ -50,26 +58,37 @@ export class SinricProGarageDoor extends AccessoryController implements SinricPr
    * @param value  - {"mode":"Open"} or {"mode":"Close"}
    */
   public updateState(action: string, value: any): void {
-    this.platform.log.debug('Updating:', this.accessory.displayName, '=', value);
+    this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 
     if(action === ActionConstants.SET_MODE) {
-      this.states.currentState = ('OPEN' === value.mode?.toUpperCase());
+      if('OPEN' === value.mode?.toUpperCase()) {
+        this.states.currentState = this.platform.Characteristic.TargetDoorState.OPEN;
+      } else {
+        this.states.currentState = this.platform.Characteristic.TargetDoorState.CLOSED;
+      }
+      this.service.getCharacteristic(this.platform.Characteristic.TargetDoorState).updateValue(this.states.currentState);
       this.accessory.context.device.garageDoorState = value.mode;
     }
   }
 
   async setTargetState(value: CharacteristicValue) {
-    const tmpValue = value as boolean;
-    this.platform.log.debug('setLockTargetState:', this.accessory.displayName, '=', tmpValue);
+    const tmpValue = value as number;
+    this.platform.log.debug('[setTargetState()]:', this.accessory.displayName, '=', tmpValue);
 
     if (this.states.targetState !== tmpValue) {
       this.states.targetState = tmpValue;
-      super.setMode(tmpValue ? 'Open' : 'Close');
+      super.setMode(tmpValue === 1 ? 'Open' : 'Close');
     }
   }
 
-  async getTargetState(): Promise<CharacteristicValue> {
+  getTargetState() : CharacteristicValue {
     const State = this.states.targetState;
+    this.platform.log.info('[getTargetState()]:', this.accessory.displayName, 'targetState', State);
     return State;
+  }
+
+  getCurrentDoorState(): CharacteristicValue {
+    this.platform.log.info('[getCurrentDoorState()]:', this.accessory.displayName, 'currentState', this.states.currentState);
+    return this.states.currentState;
   }
 }

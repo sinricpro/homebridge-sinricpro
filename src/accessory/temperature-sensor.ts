@@ -7,6 +7,7 @@ import { ActionConstants } from '../constants';
 
 /**
  * Sinric Pro - Temperature Sensor
+ * https://developers.homebridge.io/#/service/TemperatureSensor
  */
 export class SinricProTemperatureSensor extends AccessoryController implements SinricProAccessory {
   private readonly temperatureService: Service;
@@ -28,7 +29,7 @@ export class SinricProTemperatureSensor extends AccessoryController implements S
       .setCharacteristic(this.platform.Characteristic.Model, ModelConstants.TEMPERATURE_SENSOR_MODEL)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.sinricProDeviceId);
 
-    this.platform.log.debug('Adding TemperatureSensor', this.accessory.displayName, accessory.context.device);
+    this.platform.log.debug('[SinricProTemperatureSensor()]: Adding device:', this.accessory.displayName, accessory.context.device);
 
     this.temperatureService = this.accessory.getService(this.platform.Service.TemperatureSensor)
       ?? this.accessory.addService(this.platform.Service.TemperatureSensor);
@@ -42,24 +43,17 @@ export class SinricProTemperatureSensor extends AccessoryController implements S
     // register handlers for Characteristic
     this.temperatureService
       .getCharacteristic(this.platform.Characteristic.CurrentTemperature)
-      // TODO
-      // .setProps({
-      //   unit: Units['CELSIUS'],
-      //   validValueRanges: [-273.15, 100],
-      //   minValue: -273.15,
-      //   maxValue: 100,
-      //   minStep: 0.1,
-      // })
       .onGet(this.getCurrentTemperature.bind(this));
 
     this.humidityService
       .getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity)
-      .setProps({
-        minStep: 0.1,
-      })
       .onGet(this.getCurrentRelativeHumidity.bind(this));
 
     this.temperatureService.addLinkedService(this.humidityService);
+
+    // restore present device state.
+    this.states.temperature = accessory.context.device.temperature ?? 10;
+    this.states.humidity = accessory.context.device.humidity ?? 10;
   }
 
   getCurrentRelativeHumidity(): CharacteristicValue {
@@ -78,11 +72,11 @@ export class SinricProTemperatureSensor extends AccessoryController implements S
    * @param value  - The new temperature/humidity value.
    */
   updateState(action: string, value: any): void {
-    this.platform.log.debug('Updating:', this.accessory.displayName, '=', value);
+    this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 
     if(action === ActionConstants.CURRENT_TEMPERATURE) {
-      this.states.temperature = value.temperature;
-      this.states.humidity = value.humidity;
+      this.states.temperature = value.temperature ?? 0;
+      this.states.humidity = value.humidity ?? 0;
       this.temperatureService.getCharacteristic(this.platform.Characteristic.CurrentTemperature).updateValue(this.states.temperature);
       this.temperatureService.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity).updateValue(this.states.humidity);
     }

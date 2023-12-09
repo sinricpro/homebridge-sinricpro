@@ -7,16 +7,6 @@ import { SinricProDevice } from './model/sinricpro-device';
 import { SINRICPRO_API_ENDPOINT_BASE_URL, SINRICPRO_HOMEBRIDGE_CLIENT_ID } from './constants';
 import { Guid } from './utils/guid';
 
-// axios.interceptors.request.use(request => {
-//     console.log('> %j', request)
-//     return request
-// })
-
-// axios.interceptors.response.use(response => {
-//     console.log('%j <', response)
-//     return response
-// })
-
 export class SinricProApiClient {
   private axiosClient!: AxiosInstance;
   private apiKey: string = '';
@@ -58,12 +48,23 @@ export class SinricProApiClient {
       this.log.debug(`${initData[0].data.devices.length} device(s) found!`);
 
       for (const device of initData[0].data.devices) {
+        //console.log('device:', device);
+
         const sinricproDevice: SinricProDevice = {
           id: device.id,
           name: device.name,
-          deviceType: device.product,
+          deviceType: { code: device.product.code },
           powerState: device.powerState || null,
           room: device.room,
+          rangeValue: device.rangeValue,
+          garageDoorState: device.garageDoorState,
+          brightness: device.brightness,
+          powerLevel: device.powerLevel,
+          temperature: device.temperature,
+          thermostatMode: device.thermostatMode,
+          contactState: device.contactState,
+          humidity: device.humidity,
+          lastMotionState: device.lastMotionState,
         };
 
         devices.push(sinricproDevice);
@@ -76,6 +77,7 @@ export class SinricProApiClient {
   public async authenticate(): Promise<boolean> {
     this.log.debug('[authenticate()]: Login to SinricPro...');
 
+    // eslint-disable-next-line eqeqeq
     if (this.expiresAt != null && (new Date().getTime() - this.expiresAt.getTime() < this.TWO_MINUTES_MILLIS)) {
       // Has a valid auth token. do nothing...
       return true;
@@ -133,17 +135,18 @@ export class SinricProApiClient {
   }
 
   private getCommand(action, value) {
-    return JSON.stringify({
+    return {
       'clientId': SINRICPRO_HOMEBRIDGE_CLIENT_ID,
       'messageId': Guid.newGuid(),
       'type': 'request',
       'action': action,
       'createdAt': this.getSecondsSinceEpich(),
       'value': JSON.stringify(value),
-    });
+    };
   }
 
-  private async execAction(deviceId: string, data?: string): Promise<boolean> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async execAction(deviceId: string, data: any): Promise<boolean> {
     const deviceActionUrl = util.format('/devices/%s/action', deviceId);
 
     if (await this.authenticate()) {
@@ -205,6 +208,15 @@ export class SinricProApiClient {
     return this.execAction(deviceId, data);
   }
 
+  public async setPowerLevel(deviceId: string, powerLevel: number): Promise<boolean> {
+    const data = this.getCommand('setPowerLevel', { 'powerLevel': powerLevel });
+    return this.execAction(deviceId, data);
+  }
+
+  public async setThermostatMode(deviceId: string, thermostatMode: string): Promise<boolean> {
+    const data = this.getCommand('setThermostatMode', { 'thermostatMode': thermostatMode });
+    return this.execAction(deviceId, data);
+  }
 
 
 }

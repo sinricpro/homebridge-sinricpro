@@ -7,6 +7,7 @@ import { ActionConstants, ModelConstants } from '../constants';
 
 /**
  * Sinric Pro - Dimmer Switch
+ * https://developers.homebridge.io/#/service/Lightbulb
  */
 export class SinricProDimmableSwitch extends AccessoryController implements SinricProAccessory {
   private service: Service;
@@ -27,16 +28,13 @@ export class SinricProDimmableSwitch extends AccessoryController implements Sinr
       .setCharacteristic(this.platform.Characteristic.Model, ModelConstants.DIMMABLE_SWIRCH_MODEL)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.sinricProDeviceId);
 
-    this.platform.log.debug('Adding Dimmable Switch', this.accessory.displayName, accessory.context.device);
+    this.platform.log.debug('[SinricProDimmableSwitch()]: Adding device:', this.accessory.displayName, accessory.context.device);
 
     this.service = this.accessory.getService(this.platform.Service.Lightbulb)
       ?? this.accessory.addService(this.platform.Service.Lightbulb);
 
     this.service.setPrimaryService(true);
     this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.name);
-
-    this.dimmerStates.powerLevel = accessory.context.device.powerLevel ?? 100;
-    this.dimmerStates.on = ('ON' === accessory.context.device.powerState?.toUpperCase());
 
     // register handlers for the On/Off Characteristic
     this.service.getCharacteristic(this.platform.Characteristic.On)
@@ -50,12 +48,17 @@ export class SinricProDimmableSwitch extends AccessoryController implements Sinr
         maxValue: 100,
         validValueRanges: [1, 100],
       })
-      .onGet(this.getBrightness.bind(this))
-      .onSet(this.setBrightness.bind(this));
+      .onGet(this.getPowerLevel.bind(this))
+      .onSet(this.setPowerLevel.bind(this));
+
+    // restore present device state.
+    this.dimmerStates.powerLevel = accessory.context.device.powerLevel ?? 100;
+    this.dimmerStates.on = ('ON' === accessory.context.device.powerState?.toUpperCase());
+
   }
 
   public updateState(action: string, value: any): void {
-    this.platform.log.debug(`Updating DimmableSwitch: ${this.accessory.displayName} to ${value}`);
+    this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 
     if(action === ActionConstants.SET_POWER_STATE) {
       this.dimmerStates.on = ('ON' === value.state.toUpperCase());
@@ -67,12 +70,12 @@ export class SinricProDimmableSwitch extends AccessoryController implements Sinr
   }
 
   getPowerState(): CharacteristicValue {
-    this.platform.log.debug('getPowerState:', this.accessory.displayName, '=', this.dimmerStates.on);
+    this.platform.log.debug('[getPowerState()]:', this.accessory.displayName, '=', this.dimmerStates.on);
     return this.dimmerStates.on;
   }
 
-  getBrightness(): CharacteristicValue {
-    this.platform.log.debug('getBrightness:', this.accessory.displayName, '=', this.dimmerStates.powerLevel);
+  getPowerLevel(): CharacteristicValue {
+    this.platform.log.debug('[getPowerLevel()]:', this.accessory.displayName, '=', this.dimmerStates.powerLevel);
     return this.dimmerStates.powerLevel;
   }
 }
