@@ -4,7 +4,7 @@
 
 </p>
 
-<h1 align="center">Homebridge - SinricPro</h1>
+# Homebridge - SinricPro
 
 The plugin exposes all your SinricPro devices to Homekit.
 
