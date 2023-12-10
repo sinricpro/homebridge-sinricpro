@@ -1,3 +1,10 @@
+/*
+ *  Copyright (c) 2019-2023 Sinric. All rights reserved.
+ *  Licensed under Creative Commons Attribution-Share Alike (CC BY-SA)
+ *
+ *  This file is part of the Sinric Pro - Homebridge Plugin (https://github.com/sinricpro/homebridge-sinricpro)
+ */
+
 export const SINRICPRO_HOMEBRIDGE_CLIENT_ID = 'api_interaction';
 export const SINRICPRO_API_ENDPOINT_BASE_URL = 'https://api.sinric.pro/api/v1';
 export const SINRICPRO_SSE_ENDPOINT_BASE_URL = 'https://sse.sinric.pro/sse/stream?accessToken=%s';

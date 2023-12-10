@@ -1,3 +1,10 @@
+/*
+ *  Copyright (c) 2019-2023 Sinric. All rights reserved.
+ *  Licensed under Creative Commons Attribution-Share Alike (CC BY-SA)
+ *
+ *  This file is part of the Sinric Pro - Homebridge Plugin (https://github.com/sinricpro/homebridge-sinricpro)
+ */
+
 /* eslint-disable max-len */
 import EventSource from 'eventsource';
 import * as util from 'util';
@@ -8,7 +15,6 @@ import { SINRICPRO_SSE_ENDPOINT_BASE_URL } from './constants';
 export class SinricProSseClient {
   private eventSource!: EventSource;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public onDeviceStateChange?: (deviceId: string, action: string, value: any) => void;
 
   constructor(

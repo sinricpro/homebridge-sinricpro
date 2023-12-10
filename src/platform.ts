@@ -1,3 +1,9 @@
+/*
+ *  Copyright (c) 2019-2023 Sinric. All rights reserved.
+ *  Licensed under Creative Commons Attribution-Share Alike (CC BY-SA)
+ *
+ *  This file is part of the Sinric Pro - Homebridge Plugin (https://github.com/sinricpro/homebridge-sinricpro)
+ */
 import { API, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
 
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
@@ -84,7 +90,6 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
       this.log.info('[didFinishLaunching()]: init SSE Client..');
       this.sinricProSseClient = new SinricProSseClient(this.log, this.sinricProApiClient.authToken);
       // listen to device state changes
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.sinricProSseClient.onDeviceStateChange = (deviceId: string, action: string, value: any) => {
         this.sinricproDevices.filter(spd => spd.sinricProDeviceId === deviceId).map((device) => {
           this.log.info('[onDeviceStateChange()]: Update device id: %s with %s', device.sinricProDeviceId, value);

@@ -1,3 +1,9 @@
+/*
+ *  Copyright (c) 2019-2023 Sinric. All rights reserved.
+ *  Licensed under Creative Commons Attribution-Share Alike (CC BY-SA)
+ *
+ *  This file is part of the Sinric Pro - Homebridge Plugin (https://github.com/sinricpro/homebridge-sinricpro)
+ */
 import { Logger } from 'homebridge';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import https from 'https';
@@ -43,14 +49,11 @@ export class SinricProApiClient {
       this.log.debug(`${initData[0].data.devices.length} device(s) found!`);
 
       for (const device of initData[0].data.devices) {
-        //console.log('device:', device);
-
         const sinricproDevice: SinricProDevice = {
           id: device.id,
           name: device.name,
           deviceType: { code: device.product.code },
           powerState: device.powerState || null,
-          room: device.room,
           rangeValue: device.rangeValue,
           garageDoorState: device.garageDoorState,
           brightness: device.brightness,
@@ -140,7 +143,6 @@ export class SinricProApiClient {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async execAction(deviceId: string, data: any): Promise<boolean> {
     const deviceActionUrl = util.format('/devices/%s/action', deviceId);
 

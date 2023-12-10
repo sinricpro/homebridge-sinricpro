@@ -1,3 +1,10 @@
+/*
+ *  Copyright (c) 2019-2023 Sinric. All rights reserved.
+ *  Licensed under Creative Commons Attribution-Share Alike (CC BY-SA)
+ *
+ *  This file is part of the Sinric Pro - Homebridge Plugin (https://github.com/sinricpro/homebridge-sinricpro)
+ */
+
 /* eslint-disable max-len */
 import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 import { SinricProPlatform } from '../platform';
@@ -52,7 +59,6 @@ export class SinricProBlind extends AccessoryController implements SinricProAcce
    * @param action - setRangeValue
    * @param value  - {"rangeValue":100}
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public updateState(action: string, value: any): void {
     this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 
