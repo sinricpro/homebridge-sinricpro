@@ -48,7 +48,7 @@ export class SinricProPlatform implements DynamicPlatformPlugin {
     public readonly api: API,
   ) {
 
-    if(config.token === null) {
+    if(!config.token) {
       this.log.error('API Token is empty. Cannot continue!');
       return;
     }
