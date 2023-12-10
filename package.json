@@ -1,12 +1,12 @@
 {
   "displayName": "SinricPro",
   "name": "homebridge-sinricpro",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sinric Pro devices support for HomeKit.",
-  "license": "Apache-2.0",
+  "license": "CC-BY-SA",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sinricpro/homebridge-sinricpro/GITHUB_PROJECT_NAME.git"
+    "url": "https://github.com/sinricpro/homebridge-sinricpro.git"
   },
   "bugs": {
     "url": "https://github.com/sinricpro/homebridge-sinricpro/issues"
@@ -23,7 +23,13 @@
     "prepublishOnly": "npm run lint && npm run build"
   },
   "keywords": [
-    "homebridge-plugin"
+    "sinricpro",
+    "homebridge-sinricpro",
+    "alexa",
+    "google-home",
+    "smartthings",
+    "esp32",
+    "esp8266"
   ],
   "dependencies": {
     "axios": "^1.6.2",
