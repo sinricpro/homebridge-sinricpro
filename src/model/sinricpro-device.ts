@@ -12,14 +12,14 @@ export interface SinricProDevice {
     id: number;
     name: string;
     deviceType: SinricProDeviceType;
-    powerState: string | undefined; // On or Off
-    rangeValue: number | undefined;
-    garageDoorState: number | undefined;
-    brightness: number | undefined;
-    powerLevel: number | undefined;
-    temperature: number | undefined;
-    thermostatMode: string | undefined;
-    contactState: string | undefined;
-    humidity: number | undefined;
-    lastMotionState: string | undefined;
+    powerState?: string;
+    rangeValue?: number;
+    garageDoorState?: number;
+    brightness?: number;
+    powerLevel?: number;
+    temperature?: number;
+    thermostatMode?: string;
+    contactState?: string;
+    humidity?: number;
+    lastMotionState?: string;
 }

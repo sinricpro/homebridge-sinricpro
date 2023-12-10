@@ -46,7 +46,7 @@ export class SinricProApiClient {
         this.axiosClient.get('/devices'),
       ]);
 
-      this.log.debug(`${initData[0].data.devices.length} device(s) found!`);
+      this.log.debug(`[getDevices()]: ${initData[0].data.devices.length} device(s) found!`);
 
       for (const device of initData[0].data.devices) {
         const sinricproDevice: SinricProDevice = {
