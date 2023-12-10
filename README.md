@@ -4,6 +4,8 @@
 
 </p>
 
+[![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
+
 # Homebridge - SinricPro
 
 This plugin seamlessly exposes all your SinricPro devices to HomeKit, enabling you to control your ESP8266/ESP32/Raspberry Pi Pico directly within the Apple Home app
