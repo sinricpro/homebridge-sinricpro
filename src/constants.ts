@@ -1,9 +1,6 @@
-// TODO: Change to homebridge-sinricpro later
-export const SINRICPRO_HOMEBRIDGE_CLIENT_ID = 'portal'; /* API client id */
-
-export const SINRICPRO_API_ENDPOINT_BASE_URL = 'https://portal.sinric.pro/api/v1';
-
-export const SINRICPRO_SSE_ENDPOINT_BASE_URL = 'https://portal.sinric.pro/sse/stream?accessToken=%s';
+export const SINRICPRO_HOMEBRIDGE_CLIENT_ID = 'api_interaction';
+export const SINRICPRO_API_ENDPOINT_BASE_URL = 'https://api.sinric.pro/api/v1';
+export const SINRICPRO_SSE_ENDPOINT_BASE_URL = 'https://sse.sinric.pro/sse/stream?accessToken=%s';
 
 export abstract class ModelConstants {
   static readonly MANUFACTURER = 'SinricPro';
@@ -35,6 +32,7 @@ export abstract class ActionConstants {
   static readonly SET_LOCK_STATE = 'setLockState';
   static readonly SET_THERMOSTAT_MODE = 'setThermostatMode';
   static readonly SET_MODE = 'setMode';
+  static readonly DOORBELL_PRESS = 'DoorbellPress';
 }
 
 export abstract class DeviceTypeConstants {

@@ -4,7 +4,7 @@ import https from 'https';
 import * as util from 'util';
 
 import { SinricProDevice } from './model/sinricpro-device';
-import { SINRICPRO_API_ENDPOINT_BASE_URL, SINRICPRO_HOMEBRIDGE_CLIENT_ID } from './constants';
+import { ActionConstants, SINRICPRO_API_ENDPOINT_BASE_URL, SINRICPRO_HOMEBRIDGE_CLIENT_ID } from './constants';
 import { Guid } from './utils/guid';
 
 export class SinricProApiClient {
@@ -19,8 +19,6 @@ export class SinricProApiClient {
   private httpsAgent = new https.Agent({
     rejectUnauthorized: true,
   });
-
-  private rooms: Room[] = [];
 
   constructor(
     apiKey: string,
@@ -171,47 +169,47 @@ export class SinricProApiClient {
   }
 
   public async setPowerState(deviceId: string, powerState: string): Promise<boolean> {
-    const data = this.getCommand('setPowerState', { 'state': powerState });
+    const data = this.getCommand(ActionConstants.SET_POWER_STATE, { 'state': powerState });
     return this.execAction(deviceId, data);
   }
 
   public async setBrightness(deviceId: string, brightness: number): Promise<boolean> {
-    const data = this.getCommand('setBrightness', { 'brightness': brightness });
+    const data = this.getCommand(ActionConstants.SET_BRIGHTNESS, { 'brightness': brightness });
     return this.execAction(deviceId, data);
   }
 
   public async setRangeValue(deviceId: string, rangeValue: number): Promise<boolean> {
-    const data = this.getCommand('setRangeValue', { 'rangeValue': rangeValue });
+    const data = this.getCommand(ActionConstants.SET_RANGE_VALUE, { 'rangeValue': rangeValue });
     return this.execAction(deviceId, data);
   }
 
   public async setTargetTemperature(deviceId: string, toTemperature: number): Promise<boolean> {
-    const data = this.getCommand('targetTemperature', { 'temperature': toTemperature });
+    const data = this.getCommand(ActionConstants.TARGET_TEMPERATURE, { 'temperature': toTemperature });
     return this.execAction(deviceId, data);
   }
 
   public async setMode(deviceId: string, mode: string): Promise<boolean> {
-    const data = this.getCommand('setMode', { 'mode': mode });
+    const data = this.getCommand(ActionConstants.SET_MODE, { 'mode': mode });
     return this.execAction(deviceId, data);
   }
 
   public async setLockState(deviceId: string, state: string): Promise<boolean> {
-    const data = this.getCommand('setLockState', { 'state': state });
+    const data = this.getCommand(ActionConstants.SET_LOCK_STATE, { 'state': state });
     return this.execAction(deviceId, data);
   }
 
   public async setDoorbellPress(deviceId: string): Promise<boolean> {
-    const data = this.getCommand('DoorbellPress', { 'state': 'pressed' });
+    const data = this.getCommand(ActionConstants.DOORBELL_PRESS, { 'state': 'pressed' });
     return this.execAction(deviceId, data);
   }
 
   public async setPowerLevel(deviceId: string, powerLevel: number): Promise<boolean> {
-    const data = this.getCommand('setPowerLevel', { 'powerLevel': powerLevel });
+    const data = this.getCommand(ActionConstants.SET_POWER_LEVEL, { 'powerLevel': powerLevel });
     return this.execAction(deviceId, data);
   }
 
   public async setThermostatMode(deviceId: string, thermostatMode: string): Promise<boolean> {
-    const data = this.getCommand('setThermostatMode', { 'thermostatMode': thermostatMode });
+    const data = this.getCommand(ActionConstants.SET_THERMOSTAT_MODE, { 'thermostatMode': thermostatMode });
     return this.execAction(deviceId, data);
   }
 

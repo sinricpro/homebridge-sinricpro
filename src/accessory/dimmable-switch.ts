@@ -57,6 +57,7 @@ export class SinricProDimmableSwitch extends AccessoryController implements Sinr
 
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public updateState(action: string, value: any): void {
     this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 

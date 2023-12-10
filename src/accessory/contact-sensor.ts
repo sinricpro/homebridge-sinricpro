@@ -3,7 +3,6 @@ import { SinricProPlatform } from '../platform';
 import { SinricProAccessory } from './accessory';
 import { AccessoryController } from './accessory-controller';
 import { ModelConstants } from '../constants';
-import { ActionConstants } from '../constants';
 
 /**
  * Sinric Pro - Contact Sensor

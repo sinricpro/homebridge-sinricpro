@@ -1,9 +1,8 @@
-import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
+import { Service, PlatformAccessory } from 'homebridge';
 import { SinricProPlatform } from '../platform';
 import { SinricProAccessory } from './accessory';
 import { AccessoryController } from './accessory-controller';
 import { ModelConstants } from '../constants';
-import { ActionConstants } from '../constants';
 
 /**
  * Sinric Pro - Doorbell

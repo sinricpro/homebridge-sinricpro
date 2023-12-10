@@ -7,7 +7,7 @@ import { ActionConstants } from '../constants';
 
 /**
  * Sinric Pro - Temperature Sensor
- * https://developers.homebridge.io/#/service/TemperatureSensor
+ * https://developers.homebridge.io/#/service/TemperatureSensor and https://developers.homebridge.io/#/service/HumiditySensor
  */
 export class SinricProTemperatureSensor extends AccessoryController implements SinricProAccessory {
   private readonly temperatureService: Service;

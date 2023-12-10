@@ -71,7 +71,7 @@ export class SinricProGarageDoor extends AccessoryController implements SinricPr
     }
   }
 
-  async setTargetState(value: CharacteristicValue) {
+  setTargetState(value: CharacteristicValue) {
     const tmpValue = value as number;
     this.platform.log.debug('[setTargetState()]:', this.accessory.displayName, '=', tmpValue);
 

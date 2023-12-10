@@ -2,11 +2,11 @@ import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 import { SinricProPlatform } from '../platform';
 import { SinricProAccessory } from './accessory';
 import { AccessoryController } from './accessory-controller';
-import { ModelConstants } from '../constants';
-import { ActionConstants } from '../constants';
+import { ActionConstants, ModelConstants } from '../constants';
 
 /**
  * Sinric Pro - Switch
+ * https://developers.homebridge.io/#/service/Switch
  */
 export class SinricProSwitch extends AccessoryController implements SinricProAccessory {
   private service: Service;

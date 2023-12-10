@@ -3,8 +3,7 @@ import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 import { SinricProPlatform } from '../platform';
 import { SinricProAccessory } from './accessory';
 import { AccessoryController } from './accessory-controller';
-import { ModelConstants } from '../constants';
-import { ActionConstants } from '../constants';
+import { ActionConstants, ModelConstants } from '../constants';
 
 /**
  * Sinric Pro - Blind
@@ -53,6 +52,7 @@ export class SinricProBlind extends AccessoryController implements SinricProAcce
    * @param action - setRangeValue
    * @param value  - {"rangeValue":100}
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public updateState(action: string, value: any): void {
     this.platform.log.debug('[updateState()]:', this.accessory.displayName, 'action=', action, 'value=', value);
 
