@@ -1,7 +1,7 @@
 {
   "displayName": "SinricPro",
   "name": "homebridge-sinricpro",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "Sinric Pro devices support for HomeKit.",
   "license": "CC-BY-SA",
   "repository": {
