@@ -5,6 +5,7 @@
 </p>
 
 [![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
+[![Discord](https://img.shields.io/badge/discord-%23homebridge-blue.svg)](https://discord.gg/rq9vcRcSqA) </br>
 
 # Homebridge - SinricPro
 
@@ -43,6 +44,9 @@ This plugin seamlessly exposes all your SinricPro devices to HomeKit, enabling y
 2. cd homebridge-sinricpro
 3. npm link
 4. npm run watch
+
+## Join the community!
+Join us on our [Official Discord Server](https://discord.gg/rq9vcRcSqA)!
 
 ### Limitations
 
