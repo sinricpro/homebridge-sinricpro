@@ -6,4 +6,4 @@
 
 1.1.3 - Added hue and color temperature support for SinricPro Light. Thanks @resonaura
  
-1.1.4 - Fix Light Accessory Saturation Issue on Raspberry Pi & minor Improvements
+1.1.4 - Fix Light Accessory Saturation Issue on Raspberry Pi & minor Improvements. Thanks @resonaura
