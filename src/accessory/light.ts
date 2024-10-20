@@ -30,6 +30,10 @@ export class SinricProLight
     colorTemperature: 2700,
   };
 
+  // Timer to debounce color updates
+  private colorUpdateTimeout: NodeJS.Timeout | null = null;
+  private readonly debounceTime = 100; // Debounce time in milliseconds
+
   constructor(
     private readonly platform: SinricProPlatform,
     private readonly accessory: PlatformAccessory,
@@ -198,27 +202,29 @@ export class SinricProLight
     return ColorConverter.kelvinToMireds(this.lightStates.colorTemperature);
   }
 
-  // Add setHue method
-  async setHue(value: CharacteristicValue) {
-    const hue = value as number;
+  /**
+   * Schedules a color update with debounce logic.
+   * If a new update comes within the debounce time, the timer is reset.
+   */
+  private scheduleColorUpdate() {
+    if (this.colorUpdateTimeout) {
+      clearTimeout(this.colorUpdateTimeout); // Reset the timer if it's already running
+    }
 
-    // Update the local state
-    this.lightStates.hue = hue;
-
-    // Retrieve current saturation value
-    const saturation = this.lightStates.saturation;
-
-    // Convert HSV to RGB
-    const rgb = ColorConverter.hsvToRgb(hue, saturation, 100);
-
-    await this.setColor(rgb);
+    this.colorUpdateTimeout = setTimeout(async () => {
+      const { hue, saturation } = this.lightStates;
+      const rgb = ColorConverter.hsvToRgb(hue, saturation, 100);
+      await this.setColor(rgb); // Send the updated color to the device
+    }, this.debounceTime); // Trigger update after the debounce period
   }
 
-  // Add setSaturation method
-  async setSaturation(value: CharacteristicValue) {
-    const saturation = value as number;
+  async setHue(value: CharacteristicValue) {
+    this.lightStates.hue = value as number;
+    this.scheduleColorUpdate(); // Schedule a color update
+  }
 
-    // Update the local state
-    this.lightStates.saturation = saturation;
+  async setSaturation(value: CharacteristicValue) {
+    this.lightStates.saturation = value as number;
+    this.scheduleColorUpdate(); // Schedule a color update
   }
 }
