@@ -8,4 +8,4 @@
  
 1.1.4 - Fix Light Accessory Saturation Issue on Raspberry Pi & minor Improvements. Thanks @resonaura
 
-2.0.0 - feat: Homebridge v2.0 compatibility added
+2.0.0 - feat: Homebridge v2.0 compatibility added (PR7 https://github.com/sinricpro/homebridge-sinricpro/pull/7)
