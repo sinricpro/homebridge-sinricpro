@@ -18,6 +18,8 @@ This plugin seamlessly exposes all your SinricPro devices to HomeKit, enabling y
 3. Enter the your Sinric Pro API key. If you do not have one, go to Sinric Pro Portal -> Credentials -> New API Key
 4. Restart Homebridge. Your devices will be automatically synced and ready to be controlled through HomeKit!
 
+Plugin is compatible with Homebridge v2.0
+
 #### Following devices types are supported:
 
 | Sinric Pro           | HomeKit Accessory                    | Notes            |
